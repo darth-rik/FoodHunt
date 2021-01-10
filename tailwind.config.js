@@ -10,11 +10,15 @@ module.exports = {
 				"mobile-bg": "url('images/mobile-bg.jpg')",
 				"mobile-header": "url('images/mobile-header.jpg')",
 				"desktop-bg": "url('images/desktop-bg.jpg')",
+				"desktop-header": "url('images/desktop-header.jpg')",
 			}),
 		},
 	},
 	variants: {
-		extend: {},
+		extend: {
+			backgroundColor: ["checked"],
+			borderColor: ["checked"],
+		},
 	},
 	plugins: [],
 };

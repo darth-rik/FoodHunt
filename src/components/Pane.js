@@ -5,9 +5,9 @@ const Pane = ({ isOpen }) => {
 	return (
 		<div
 			style={{ width: `${isOpen ? "60%" : "0"}` }}
-			className=' container bg-gray-900 z-10 fixed h-screen overflow-hidden transition-all '
+			className=' container bg-gray-900 z-30 fixed h-full  overflow-x-hidden transition-all '
 		>
-			<ul className='text-3xl font-light text-center mt-80 lg:text-5xl cursor-pointer '>
+			<ul className='text-3xl font-light text-center mt-32 lg:text-5xl cursor-pointer md:mt-24 '>
 				<li className='mb-10 hover:bg-gray-700 p-4 lg:p-8 lg:mb-14 transition-all '>
 					Home
 				</li>

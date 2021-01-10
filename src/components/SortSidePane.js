@@ -1,17 +1,19 @@
 import React from "react";
+import Close from "./ClosePanes";
 
-const FilterSidePane = () => {
+const SortSidePane = (props) => {
+	const close = () => {
+		props.closeAll();
+	};
 	return (
 		<div
-			style={{ width: "0%" }}
-			className=' text-black h-full overflow-hidden fixed z-30 bg-white   '
+			style={{ width: `${props.sortIsOpen ? "100%" : "0"}` }}
+			className=' text-black h-full overflow-x-hidden fixed z-30 bg-white transition-all  '
 		>
-			<span className='material-icons text-3xl absolute right-6 top-6 hover:text-red-600'>
-				close
-			</span>
-			<div className='mx-8 mt-32 mb-8'>
+			<Close close={close} />
+			<div className='mx-8 mt-32 mb-16'>
 				<h1 className='text-3xl mb-16'>Sort by</h1>
-				<div className='text-2xl flex-wrap overflow-scroll h-40'>
+				<div className='text-2xl flex-wrap overflow-y-scroll h-40'>
 					<div className='mb-8 flex items-center mr-16 '>
 						<input
 							className='border-green-300 inline-block w-6 h-6 mr-4'
@@ -39,4 +41,4 @@ const FilterSidePane = () => {
 	);
 };
 
-export default FilterSidePane;
+export default SortSidePane;
