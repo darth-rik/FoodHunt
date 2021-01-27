@@ -5,9 +5,9 @@ import Recipe from "./pages/Recipe";
 const App = () => {
 	return (
 		<div className='text-white'>
-			{/* <Home /> */}
-			{/* <RecipeResults />*/}
-			<Recipe />
+			<Home />
+			{/* <RecipeResults /> */}
+			{/* <Recipe /> */}
 		</div>
 	);
 };

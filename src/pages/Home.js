@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Pane from "../components/Pane";
+import AutoCompleteList from "../components/AutoCompleteList";
 const Home = () => {
 	useEffect(() => {
 		document.body.addEventListener("click", (e) => {
@@ -15,6 +16,8 @@ const Home = () => {
 		});
 	});
 	const [isOpen, setIsOpen] = useState(false);
+	const [isAutoSuggest, setIsAutoSuggest] = useState([]);
+
 	const clicked = () => {
 		if (!isOpen) {
 			setIsOpen(true);
@@ -43,11 +46,17 @@ const Home = () => {
 						className=' md:flex md:flex-col text-center md:items-center  '
 						action=''
 					>
-						<input
-							className='py-2 px-6 md:text-xl rounded-md text-black outline-none w-full mb-8 md:max-w-3xl md:mb-12 md:py-3'
-							type='text'
-							placeholder='Search Recipes...'
-						/>
+						<div className='mb-8 relative md:w-6/12'>
+							<input
+								className='py-2 px-6 md:text-xl rounded-md text-black outline-none w-full   md:py-3'
+								type='text'
+								placeholder='Search Recipes...'
+							/>
+							<div className='absolute top-16 left-0 bg-white h-56 w-full overflow-y-scroll shadow-md rounded-md '>
+								<AutoCompleteList />
+							</div>
+						</div>
+
 						<button className=' items-start shadow-md hover:bg-red-800 focus:outline-none    py-2 px-6 bg-red-600 md:py-2 md:px-12'>
 							Search
 						</button>
