@@ -1,10 +1,24 @@
-import React from "react";
+import { React, useEffect } from "react";
 
-const AutoCompleteList = () => {
+const AutoCompleteList = (props) => {
+	useEffect(() => {
+		document.body.addEventListener("click", () => {
+			props.list();
+		});
+	});
+	const clickedSuggested = (e) => {
+		console.log(props.item.title);
+
+		props.suggested(props.item.title);
+	};
+
 	return (
-		<div className='text-black text-2xl border-b-2 flex cursor-pointer hover:bg-gray-300'>
-			<h4 className='p-10'>Chicken BBQ</h4>
-		</div>
+		<h4
+			onClick={clickedSuggested}
+			className='text-black text-2xl border-b-2 p-8 flex cursor-pointer hover:bg-gray-300'
+		>
+			{props.item.title}
+		</h4>
 	);
 };
 
