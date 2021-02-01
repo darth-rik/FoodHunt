@@ -1,33 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import Header from "../components/Header";
 import Pane from "../components/Pane";
+import Popup from "../components/PopUp";
 import _ from "lodash";
 import AutoCompleteList from "../components/AutoCompleteList";
-const Home = () => {
-	useEffect(() => {
-		document.body.addEventListener("click", (e) => {
-			if (
-				isOpen &&
-				!e.target.classList.contains("material-icons") &&
-				!e.target.classList.contains("bg-gray-900") &&
-				!e.target.classList.contains("mb-10")
-			) {
-				setIsOpen(false);
-			}
-		});
-	});
 
-	const [isOpen, setIsOpen] = useState(false);
+const Home = (props) => {
 	const [isAutoSuggest, setIsAutoSuggest] = useState([]);
 	const [isValue, setIsValue] = useState("");
 	const [isListOpen, setIsListOpen] = useState(true);
+	const [isOpen, setIsOpen] = useState(false);
+	const [dataReceived, setDataReceived] = useState("");
+
+	useEffect(() => {
+		if (localStorage) {
+			localStorage.clear();
+		}
+	}, []);
 
 	const clicked = () => {
-		if (!isOpen) {
-			setIsOpen(true);
-		} else {
-			setIsOpen(false);
-		}
+		if (!isOpen) setIsOpen(true);
 	};
 	const onKeyUp = _.debounce(async (e) => {
 		try {
@@ -51,24 +44,51 @@ const Home = () => {
 	const list = () => {
 		setIsListOpen(false);
 	};
+	const search = async (e) => {
+		e.preventDefault();
+		if (isValue === "") {
+			return;
+		}
+		const res = await fetch(
+			`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${isValue}&addRecipeInformation=true&number=5`
+		);
+		const data = await res.json();
+
+		if (data.totalResults > 0) {
+			props.history.push("/recipes");
+			localStorage.setItem("recipesResults", JSON.stringify(data.results));
+			localStorage.setItem("query", JSON.stringify(isValue));
+		} else {
+			setDataReceived("error");
+		}
+	};
+	const closePane = () => {
+		if (isOpen) setIsOpen(false);
+	};
+	const dataReceive = () => {
+		setDataReceived("");
+	};
 
 	return (
 		<div className=' overflow-hidden'>
-			<Pane isOpen={isOpen} />
+			<Pane isOpen={isOpen} closePane={closePane} />
+			{dataReceived === "error" && <Popup dataReceive={dataReceive} />}
 			<div
+				onClick={closePane}
 				style={{
 					marginLeft: `${isOpen ? "60%" : "0"}`,
 					opacity: `${isOpen ? ".8 " : "1"}`,
 				}}
 				className='container min-w-full bg-mobile-bg min-h-screen bg-cover font-sans  transition-all  lg:bg-desktop-bg'
 			>
-				<Header clicked={clicked} />
+				<Header clicked={clicked} isOpen={isOpen} />
 				<div className='text-center mx-8 mb-28 mt-44 md:mb-32 '>
-					<h1 className='talue={isValue}ext-4xl leading-normal tracking-wide mb-12 md:mb-16 md:text-5xl md:leading-relaxed md:w-2/3 md:m-auto lg:text-5xl lg:leading-loose 2xl:tracking-wider 2xl:w-1/3'>
+					<h1 className='text-4xl leading-normal tracking-wide mb-12 md:mb-16 md:text-5xl md:leading-relaxed md:w-2/3 md:m-auto lg:text-5xl lg:leading-loose 2xl:tracking-wider 2xl:w-1/3'>
 						In the mood to cook great Food?
 					</h1>
 
 					<form
+						onSubmit={search}
 						className=' md:flex md:flex-col text-center md:items-center  '
 						action=''
 					>
@@ -77,7 +97,7 @@ const Home = () => {
 								className='py-2 px-6 md:text-xl rounded-md text-black outline-none w-full   md:py-3'
 								type='text'
 								placeholder='Search Recipes...'
-								onKeyUp={onKeyUp}
+								// onKeyUp={onKeyUp}
 								onChange={onChange}
 								value={isValue}
 							/>

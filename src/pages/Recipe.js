@@ -2,6 +2,7 @@ import { React, useState, useEffect } from "react";
 import Pane from "../components/Pane";
 
 const Recipe = () => {
+	const [isOpen, setIsOpen] = useState(false);
 	useEffect(() => {
 		document.body.addEventListener("click", (e) => {
 			if (
@@ -13,8 +14,20 @@ const Recipe = () => {
 				setIsOpen(false);
 			}
 		});
-	});
-	const [isOpen, setIsOpen] = useState(false);
+		// return () => {
+		// 	document.body.removeEventListener("click", (e) => {
+		// 		if (
+		// 			isOpen &&
+		// 			!e.target.classList.contains("material-icons") &&
+		// 			!e.target.classList.contains("bg-gray-900") &&
+		// 			!e.target.classList.contains("mb-10")
+		// 		) {
+		// 			setIsOpen(false);
+		// 		}
+		// 	});
+		// };
+	}, []);
+
 	const [isEquipmentsOpen, setIsEquipmentsOpen] = useState(false);
 	const [isRequirementsOpen, setIsRequirementsOpen] = useState(false);
 	const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);

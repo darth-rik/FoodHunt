@@ -3,15 +3,15 @@ import PropTypes from "prop-types";
 
 const Header = (props) => {
 	const openPane = () => {
-		props.clicked();
+		props.clicked(true);
 	};
 	return (
-		<div className='flex items-center mx-8 pt-16 mb-20 lg:mx-16 2xl:mx-32'>
+		<div className='flex items-center mx-8 pt-16 mb-20 lg:mx-16 2xl:mx-32 '>
 			<span
 				className='material-icons mr-auto text-5xl cursor-pointer'
 				onClick={openPane}
 			>
-				menu
+				{props.isOpen ? "close" : "menu"}
 			</span>
 			<h1 className=' text-4xl font-medium self-end  '>RecipeApp</h1>
 		</div>
