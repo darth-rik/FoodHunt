@@ -31,6 +31,7 @@ const RecipeResults = (props) => {
 	const [sortIsOpen, setSortIsOpen] = useState(false);
 	const [filterIsOpen, setFilterIsOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [dataFound, setDataFound] = useState(false);
 
 	const [isOpen, setIsOpen] = useState(false);
 	const clicked = () => {
@@ -59,15 +60,55 @@ const RecipeResults = (props) => {
 		setIsLoading(true);
 	};
 
+	const done = async () => {
+		const query = JSON.parse(localStorage.getItem("query"));
+		const checkedOptionSort = JSON.parse(localStorage.getItem("checkedOption"));
+		const checkedOptionCuisine = JSON.parse(
+			localStorage.getItem("checkedOptionCuisines")
+		);
+		const checkedOptionMeal = JSON.parse(
+			localStorage.getItem("checkedOptionMeals")
+		);
+
+		const res = await fetch(
+			`https://api.spoonacular.com/recipes/complexSearch?apiKey=${
+				process.env.REACT_APP_API_KEY
+			}&query=${query}&addRecipeInformation=true&${
+				checkedOptionSort ? `sort=${checkedOptionSort}&` : ""
+			}${checkedOptionCuisine ? `cuisine=${checkedOptionCuisine}&` : ""}${
+				checkedOptionMeal ? `type=${checkedOptionMeal}&` : ""
+			}number=5`
+		);
+
+		console.log(res);
+
+		const data = await res.json();
+		console.log(data);
+		if (data) {
+			localStorage.setItem("recipesResults", JSON.stringify(data.results));
+		}
+		if (data.totalResults === 0) {
+			setDataFound(true);
+		} else {
+			setDataFound(false);
+		}
+		setIsLoading(true);
+		closeAll();
+	};
 	return (
 		<div className='overflow-hidden relative '>
 			<Pane isOpen={isOpen} closePane={closePane} />
-			<FilterSidePane filterIsOpen={filterIsOpen} closeAll={closeAll} />
+			<FilterSidePane
+				filterIsOpen={filterIsOpen}
+				closeAll={closeAll}
+				done={done}
+			/>
 			<SortSidePane
 				sortIsOpen={sortIsOpen}
 				closeAll={closeAll}
 				closeSort={closeSort}
 				setLoading={setLoading}
+				done={done}
 			/>
 			<div
 				onClick={closePane}
@@ -105,6 +146,7 @@ const RecipeResults = (props) => {
 				</div>
 
 				{isLoading ? <Loader /> : <Card results={recipeResults} />}
+				{dataFound && <h1 className='text-black'>No data found</h1>}
 
 				<div className='bg-gray-800 text-center p-12 absolute left-0 bottom-0 w-full '>
 					Made By Rik

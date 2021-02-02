@@ -19,7 +19,7 @@ const SortSidePane = (props) => {
 	// let Data = localStorage.getItem("checkedOptions");
 	// setCheckedItems(Data);
 
-	const query = JSON.parse(localStorage.getItem("query"));
+	// const query = JSON.parse(localStorage.getItem("query"));
 	useEffect(() => {
 		if (localStorage.checkedData)
 			setCheckedItems(new Map(JSON.parse(localStorage.checkedData)));
@@ -55,28 +55,28 @@ const SortSidePane = (props) => {
 			if (value) {
 				localStorage.setItem("checkedOption", JSON.stringify(item));
 
-				const checkedOption = JSON.parse(localStorage.getItem("checkedOption"));
+				// const checkedOption = JSON.parse(localStorage.getItem("checkedOption"));
 
-				const res = await fetch(
-					`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${query}&addRecipeInformation=true&sort=${checkedOption}&number=5`
-				);
+				// const res = await fetch(
+				// 	`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${query}&addRecipeInformation=true&sort=${checkedOption}&number=5`
+				// );
 
-				const data = await res.json();
-				if (data) {
-					localStorage.setItem("recipesResults", JSON.stringify(data.results));
-				} else {
-				}
+				// const data = await res.json();
+				// if (data) {
+				// 	localStorage.setItem("recipesResults", JSON.stringify(data.results));
+				// } else {
+				// }
 			} else {
 				localStorage.removeItem("checkedOption");
-				const res = await fetch(
-					`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&number=10&query=${query}&addRecipeInformation=true`
-				);
-				const data = await res.json();
+				// const res = await fetch(
+				// 	`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&number=10&query=${query}&addRecipeInformation=true`
+				// );
+				// const data = await res.json();
 
-				localStorage.setItem("recipesResults", JSON.stringify(data.results));
+				// localStorage.setItem("recipesResults", JSON.stringify(data.results));
 			}
-			props.setLoading();
-			props.closeSort();
+			// props.setLoading();
+			props.done();
 		});
 	};
 
