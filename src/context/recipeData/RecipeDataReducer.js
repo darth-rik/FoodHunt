@@ -1,4 +1,9 @@
-import { GET_RECIPE_INFO, GET_INGREDIENTS, GET_EQUIPMENTS } from "../types";
+import {
+	GET_RECIPE_INFO,
+	GET_INGREDIENTS,
+	GET_EQUIPMENTS,
+	REMOVE_RECIPE,
+} from "../types";
 
 export default (state, action) => {
 	switch (action.type) {
@@ -20,6 +25,11 @@ export default (state, action) => {
 				...state,
 				recipeEquipments: action.payload,
 				loading: false,
+			};
+		case REMOVE_RECIPE:
+			return {
+				...state,
+				removeRecipe: action.payload,
 			};
 
 		default:

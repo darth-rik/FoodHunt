@@ -18,8 +18,22 @@ const Recipe = ({ match }) => {
 
 	useEffect(() => {
 		getRecipeInfo(match.params.id);
-		getRecipeEquipments(match.params.id);
-		getRecipeIngredients(match.params.id);
+		// getRecipeEquipments(match.params.id);
+		// getRecipeIngredients(match.params.id);
+	}, []);
+	const favsData = JSON.parse(localStorage.getItem("favsData"));
+	useEffect(() => {
+		if (favsData) {
+			favsData.forEach((id) => {
+				if (id === match.params.id) {
+					setFav(true);
+				} else {
+					setFav(false);
+				}
+			});
+		} else {
+			localStorage.setItem("favsData", JSON.stringify([]));
+		}
 	}, []);
 
 	const { title, servings, readyInMinutes, healthScore, image } = recipeData;
@@ -39,7 +53,8 @@ const Recipe = ({ match }) => {
 
 	const [isEquipmentsOpen, setIsEquipmentsOpen] = useState(false);
 	const [isRequirementsOpen, setIsRequirementsOpen] = useState(false);
-	const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
+	const [fav, setFav] = useState(false);
+	const [favPopUp, setFavPopUp] = useState(false);
 
 	const clicked = () => {
 		if (!isOpen) {
@@ -62,6 +77,26 @@ const Recipe = ({ match }) => {
 			setIsRequirementsOpen(false);
 		}
 	};
+	const toggleFav = () => {
+		if (fav) {
+			let index = favsData.indexOf(match.params.id);
+			favsData.splice(index, 1);
+			localStorage.setItem("favsData", JSON.stringify(favsData));
+			setFav(false);
+		} else {
+			favsData.push(match.params.id);
+			localStorage.setItem("favsData", JSON.stringify(favsData));
+			displayFavNotif();
+			setFav(true);
+		}
+	};
+
+	const displayFavNotif = () => {
+		setTimeout(() => {
+			setFavPopUp(false);
+		}, 1000);
+		setFavPopUp(true);
+	};
 
 	return (
 		<div className='overflow-x-hidden min-h-screen'>
@@ -73,6 +108,14 @@ const Recipe = ({ match }) => {
 				}}
 				className='bg-gray-800 h-80 min-w-full container transition-all md:bg-desktop-header md:bg-no-repeat md:bg-cover '
 			>
+				{favPopUp && (
+					<div className='fixed top:0 left-0 bg-black text-center w-full p-12 z-50'>
+						<p className='inline-block w-5/ md:text-2xl'>
+							Added Recipe to Favourites!
+						</p>
+					</div>
+				)}
+
 				<span
 					onClick={clicked}
 					className='material-icons text-5xl ml-4 mt-4 mb-8 md:ml-16 cursor-pointer'
@@ -91,8 +134,9 @@ const Recipe = ({ match }) => {
 								alt=''
 							/>
 							<span
-								style={{ color: "" }}
-								className='material-icons absolute right-2 top-8 text-3xl text-white cursor-pointer shadow-md '
+								onClick={toggleFav}
+								style={{ color: fav ? "red" : "white" }}
+								className='material-icons absolute right-2 top-8 text-3xl cursor-pointer shadow-md  '
 							>
 								favorite
 							</span>

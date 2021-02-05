@@ -9,8 +9,9 @@ const PopUp = (props) => {
 	return (
 		<div className='fixed top:0 left-0 bg-black text-center w-full p-12 z-50'>
 			<p className='inline-block w-5/ md:text-2xl'>
-				Oops! Seems like this recipe is not available. Please try searching for
-				something else.
+				{/* Oops! Seems like this recipe is not available. Please try searching for
+				something else. */}
+				{props.errmessage}
 			</p>
 		</div>
 	);

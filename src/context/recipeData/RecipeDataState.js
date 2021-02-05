@@ -3,14 +3,19 @@ import React, { useReducer } from "react";
 import RecipeDataContext from "./recipeDataContext";
 import RecipeDataReducer from "./RecipeDataReducer";
 
-import { GET_RECIPE_INFO, GET_EQUIPMENTS, GET_INGREDIENTS } from "../types";
+import {
+	GET_RECIPE_INFO,
+	GET_EQUIPMENTS,
+	GET_INGREDIENTS,
+	REMOVE_RECIPE,
+} from "../types";
 
 const RecipeDataState = (props) => {
 	const initialState = {
 		recipeData: {},
 		recipeIngredients: [],
 		recipeEquipments: [],
-
+		removeRecipe: false,
 		loading: true,
 	};
 	const [state, dispatch] = useReducer(RecipeDataReducer, initialState);
@@ -38,7 +43,9 @@ const RecipeDataState = (props) => {
 
 		dispatch({ type: GET_EQUIPMENTS, payload: data.equipment[0] });
 	};
-
+	const removeItem = (bool) => {
+		dispatch({ type: REMOVE_RECIPE, payload: bool });
+	};
 	return (
 		<RecipeDataContext.Provider
 			value={{
@@ -46,9 +53,11 @@ const RecipeDataState = (props) => {
 				recipeEquipments: state.recipeEquipments,
 				recipeIngredients: state.recipeIngredients,
 				loading: state.loading,
+				removeRecipe: state.removeRecipe,
 				getRecipeInfo,
 				getRecipeEquipments,
 				getRecipeIngredients,
+				removeItem,
 			}}
 		>
 			{props.children}

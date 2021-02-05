@@ -29,9 +29,11 @@ const Pane = (props) => {
 						Home
 					</li>
 				</Link>
-				<li className='mb-10 hover:bg-gray-700 p-4 lg:p-8 transition-all'>
-					Favourites
-				</li>
+				<Link to='/favourites'>
+					<li className='mb-10 hover:bg-gray-700 p-4 lg:p-8 transition-all'>
+						Favourites
+					</li>
+				</Link>
 			</ul>
 		</div>
 	);
