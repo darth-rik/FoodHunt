@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import Header from "../components/Header";
 import Pane from "../components/Pane";
@@ -12,15 +12,11 @@ const Home = (props) => {
 	const [isListOpen, setIsListOpen] = useState(true);
 	const [isOpen, setIsOpen] = useState(false);
 	const [dataReceived, setDataReceived] = useState("");
+	const [errmessage, setErrmessage] = useState("");
 
-	useEffect(() => {
-		if (localStorage) {
-			localStorage.clear();
-		}
-	}, []);
-
-	const clicked = () => {
+	const togglePane = () => {
 		if (!isOpen) setIsOpen(true);
+		else setIsOpen(false);
 	};
 	const onKeyUp = _.debounce(async (e) => {
 		try {
@@ -28,11 +24,14 @@ const Home = (props) => {
 				`https://api.spoonacular.com/recipes/autocomplete?apiKey=${process.env.REACT_APP_API_KEY}&number=10&query=${e.target.value}`
 			);
 			const data = await res.json();
-			setIsAutoSuggest(data);
+			if (res.status === 200) setIsAutoSuggest(data);
+			else throw new Error(data.message);
 		} catch (err) {
-			console.log(err);
+			setDataReceived("error");
+
+			setErrmessage(err.message);
 		}
-	}, 300);
+	}, 500);
 	const suggested = (title) => {
 		setIsValue(title);
 		setIsAutoSuggest([]);
@@ -49,40 +48,55 @@ const Home = (props) => {
 		if (isValue === "") {
 			return;
 		}
-		const res = await fetch(
-			`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${isValue}&addRecipeInformation=true&number=5`
-		);
-		const data = await res.json();
+		try {
+			const res = await fetch(
+				`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${isValue}&addRecipeInformation=true&number=5`
+			);
+			const data = await res.json();
 
-		if (data.totalResults > 0) {
-			props.history.push("/recipes");
-			localStorage.setItem("recipesResults", JSON.stringify(data.results));
-			localStorage.setItem("query", JSON.stringify(isValue));
-		} else {
+			if (res.status === 200) {
+				if (data.totalResults > 0) {
+					props.history.push("/recipes");
+					localStorage.setItem("recipesResults", JSON.stringify(data.results));
+					localStorage.setItem("query", JSON.stringify(isValue));
+				} else {
+					setDataReceived("error");
+					setErrmessage(
+						"Oops! Seems like this recipe is not available. Please try searching for something else."
+					);
+				}
+			} else {
+				throw new Error(data.message);
+			}
+		} catch (err) {
 			setDataReceived("error");
+
+			setErrmessage(err.message);
 		}
 	};
-	const closePane = () => {
-		if (isOpen) setIsOpen(false);
-	};
+
 	const dataReceive = () => {
 		setDataReceived("");
 	};
 
 	return (
 		<div className=' overflow-hidden'>
-			<Pane isOpen={isOpen} closePane={closePane} />
-			{dataReceived === "error" && <Popup dataReceive={dataReceive} />}
+			<Pane isOpen={isOpen} />
+			{dataReceived === "error" && (
+				<Popup dataReceive={dataReceive} errmessage={errmessage} />
+			)}
 			<div
-				onClick={closePane}
 				style={{
-					marginLeft: `${isOpen ? "60%" : "0"}`,
-					opacity: `${isOpen ? ".8 " : "1"}`,
+					marginLeft: isOpen ? "60%" : "0",
+					opacity: isOpen ? ".8 " : "1",
 				}}
 				className='container min-w-full bg-mobile-bg min-h-screen bg-cover font-sans  transition-all  lg:bg-desktop-bg'
 			>
-				<Header clicked={clicked} isOpen={isOpen} />
-				<div className='text-center mx-8 mb-28 mt-44 md:mb-32 '>
+				<Header clicked={togglePane} isOpen={isOpen} />
+				<div
+					style={{ pointerEvents: isOpen ? "none" : null }}
+					className='text-center mx-8 mb-28 mt-44 md:mb-32 '
+				>
 					<h1 className='text-4xl leading-normal tracking-wide mb-12 md:mb-16 md:text-5xl md:leading-relaxed md:w-2/3 md:m-auto lg:text-5xl lg:leading-loose 2xl:tracking-wider 2xl:w-1/3'>
 						In the mood to cook great Food?
 					</h1>
@@ -97,13 +111,13 @@ const Home = (props) => {
 								className='py-2 px-6 md:text-xl rounded-md text-black outline-none w-full   md:py-3'
 								type='text'
 								placeholder='Search Recipes...'
-								// onKeyUp={onKeyUp}
+								onKeyUp={onKeyUp}
 								onChange={onChange}
 								value={isValue}
 							/>
 							{isAutoSuggest.length > 0 ? (
 								<div
-									style={{ display: `${!isListOpen ? "none" : "block"}` }}
+									style={{ display: !isListOpen ? "none" : "block" }}
 									className='absolute top-16 left-0 bg-white h-56 w-full overflow-y-scroll shadow-md rounded-md '
 								>
 									{isAutoSuggest.map((item) => (

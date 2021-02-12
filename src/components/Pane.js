@@ -1,21 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const Pane = (props) => {
 	const panel = useRef();
 	const { isOpen } = props;
-	// useEffect(() => {
-	// 	document.body.addEventListener("click", (e) => {
-	// 		if (
-	// 			isOpen &&
-	// 			e.target !== panel &&
-	// 			!e.target.classList.contains(".material-icons")
-	// 		) {
-	// 			props.closePane();
-	// 		}
-	// 	});
-	// }, [isOpen]);
 
 	return (
 		<div
@@ -26,7 +15,7 @@ const Pane = (props) => {
 			<ul className='text-3xl font-light text-center mt-32 lg:text-5xl cursor-pointer md:mt-24 '>
 				<Link to='/'>
 					<li className='mb-10 hover:bg-gray-700 p-4 lg:p-8 lg:mb-14 transition-all '>
-						Home
+						Home / Search
 					</li>
 				</Link>
 				<Link to='/favourites'>
@@ -34,6 +23,11 @@ const Pane = (props) => {
 						Favourites
 					</li>
 				</Link>
+				<a href='/recipes'>
+					<li className='mb-10 hover:bg-gray-700 p-4 lg:p-8 transition-all'>
+						Recipes
+					</li>
+				</a>
 			</ul>
 		</div>
 	);

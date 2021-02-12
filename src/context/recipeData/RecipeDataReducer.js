@@ -29,7 +29,7 @@ export default (state, action) => {
 		case REMOVE_RECIPE:
 			return {
 				...state,
-				removeRecipe: action.payload,
+				removeRecipe: true,
 			};
 
 		default:

@@ -34,7 +34,7 @@ const CardItems = ({
 		FavID.splice(getId, 1);
 
 		localStorage.setItem("favsData", JSON.stringify(FavID));
-		removeItem(true);
+		removeItem();
 	};
 	return (
 		<div>
@@ -77,7 +77,7 @@ const CardItems = ({
 			{removeFav && (
 				<div>
 					<button
-						className='px-8 py-2 bg-red-500 text-white hover:bg-red-900'
+						className='px-8 py-2 bg-red-500 text-white hover:bg-red-900 outline-none'
 						onClick={removeFavourite}
 					>
 						Remove Recipe

@@ -5,17 +5,18 @@ import FilterSidePane from "../components/FilterSidePane";
 import SortSidePane from "../components/SortSidePane";
 import Card from "../components/Card";
 import Loader from "../components/Loader";
-import { Redirect } from "react-router-dom";
 
-const RecipeResults = (props) => {
+const RecipeResults = () => {
 	const [recipeResults, setRecipeResults] = useState([]);
 
 	useEffect(() => {
 		const timer = () =>
 			setTimeout(() => {
 				const data = JSON.parse(localStorage.getItem("recipesResults"));
-				if (!data) {
-					props.history.push("/");
+				if (!data || data.length === 0) {
+					setIsLoading(false);
+					setDataFound(true);
+					setErrmessage("No recipes to show. Please try searching again.");
 				} else {
 					setRecipeResults(data);
 					setIsLoading(false);
@@ -32,11 +33,14 @@ const RecipeResults = (props) => {
 	const [filterIsOpen, setFilterIsOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [dataFound, setDataFound] = useState(false);
+	const [errmessage, setErrmessage] = useState("");
 
 	const [isOpen, setIsOpen] = useState(false);
-	const clicked = () => {
+	const togglePane = () => {
 		if (!isOpen) {
 			setIsOpen(true);
+		} else {
+			setIsOpen(false);
 		}
 	};
 	const openSort = () => {
@@ -48,9 +52,6 @@ const RecipeResults = (props) => {
 	};
 	const openFilter = () => {
 		setFilterIsOpen(true);
-	};
-	const closePane = () => {
-		if (isOpen) setIsOpen(false);
 	};
 
 	const closeSort = () => {
@@ -69,35 +70,42 @@ const RecipeResults = (props) => {
 		const checkedOptionMeal = JSON.parse(
 			localStorage.getItem("checkedOptionMeals")
 		);
+		try {
+			const res = await fetch(
+				`https://api.spoonacular.com/recipes/complexSearch?apiKey=${
+					process.env.REACT_APP_API_KEY
+				}&query=${query}&addRecipeInformation=true&${
+					checkedOptionSort ? `sort=${checkedOptionSort}&` : ""
+				}${checkedOptionCuisine ? `cuisine=${checkedOptionCuisine}&` : ""}${
+					checkedOptionMeal ? `type=${checkedOptionMeal}&` : ""
+				}number=5`
+			);
 
-		const res = await fetch(
-			`https://api.spoonacular.com/recipes/complexSearch?apiKey=${
-				process.env.REACT_APP_API_KEY
-			}&query=${query}&addRecipeInformation=true&${
-				checkedOptionSort ? `sort=${checkedOptionSort}&` : ""
-			}${checkedOptionCuisine ? `cuisine=${checkedOptionCuisine}&` : ""}${
-				checkedOptionMeal ? `type=${checkedOptionMeal}&` : ""
-			}number=5`
-		);
-
-		console.log(res);
-
-		const data = await res.json();
-		console.log(data);
-		if (data) {
-			localStorage.setItem("recipesResults", JSON.stringify(data.results));
-		}
-		if (data.totalResults === 0) {
+			const data = await res.json();
+			if (res.status === 200) {
+				if (data.totalResults === 0) {
+					setDataFound(true);
+					setErrmessage(
+						"No Recipes Found. Please search with different sort/filter parameters."
+					);
+				} else {
+					setDataFound(false);
+					localStorage.setItem("recipesResults", JSON.stringify(data.results));
+				}
+			} else {
+				throw new Error(data.message);
+			}
+		} catch (err) {
+			setErrmessage(err.message);
 			setDataFound(true);
-		} else {
-			setDataFound(false);
 		}
+
 		setIsLoading(true);
 		closeAll();
 	};
 	return (
 		<div className='overflow-hidden relative '>
-			<Pane isOpen={isOpen} closePane={closePane} />
+			<Pane isOpen={isOpen} />
 			<FilterSidePane
 				filterIsOpen={filterIsOpen}
 				closeAll={closeAll}
@@ -111,43 +119,46 @@ const RecipeResults = (props) => {
 				done={done}
 			/>
 			<div
-				onClick={closePane}
 				style={{
-					marginLeft: `${isOpen ? "60%" : "0"}`,
-					opacity: `${isOpen ? ".6 " : "1"}`,
+					marginLeft: isOpen ? "60%" : "0",
+					opacity: isOpen ? ".6 " : "1",
 				}}
 				className=' container min-h-screen  transition-all min-w-full '
 			>
 				<div className=' bg-cover bg-no-repeat bg-mobile-header sm:bg-desktop-header max-w-full h-44 mb-8'>
-					<Header clicked={clicked} isOpen={isOpen} />
+					<Header clicked={togglePane} isOpen={isOpen} />
 				</div>
+				<div style={{ pointerEvents: isOpen && "none" }}>
+					<div className='flex justify-between text-black pt-6 mx-8 mb-8 md:mb-16'>
+						<p className='flex items-center text-2xl '>
+							Sort{" "}
+							<span
+								onClick={openSort}
+								className='material-icons text-red-700 ml-4 cursor-pointer'
+							>
+								{" "}
+								keyboard_arrow_down
+							</span>
+						</p>
+						<p className='flex items-center text-2xl '>
+							Filter{" "}
+							<span
+								onClick={openFilter}
+								className='material-icons text-red-700 ml-4 cursor-pointer'
+							>
+								{" "}
+								keyboard_arrow_down
+							</span>
+						</p>
+					</div>
 
-				<div className='flex justify-between text-black pt-6 mx-8 mb-8 md:mb-16'>
-					<p className='flex items-center text-2xl '>
-						Sort{" "}
-						<span
-							onClick={openSort}
-							className='material-icons text-red-700 ml-4'
-						>
-							{" "}
-							keyboard_arrow_down
-						</span>
-					</p>
-					<p className='flex items-center text-2xl '>
-						Filter{" "}
-						<span
-							onClick={openFilter}
-							className='material-icons text-red-700 ml-4'
-						>
-							{" "}
-							keyboard_arrow_down
-						</span>
-					</p>
+					{isLoading && !dataFound ? <Loader /> : null}
+					{dataFound ? (
+						<h1 className='text-black text-center md:text-3xl'>{errmessage}</h1>
+					) : (
+						<Card results={recipeResults} />
+					)}
 				</div>
-
-				{isLoading ? <Loader /> : <Card results={recipeResults} />}
-				{dataFound && <h1 className='text-black'>No data found</h1>}
-
 				<div className='bg-gray-800 text-center p-12 absolute left-0 bottom-0 w-full '>
 					Made By Rik
 				</div>

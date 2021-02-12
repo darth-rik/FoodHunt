@@ -6,9 +6,7 @@ const AutoCompleteList = (props) => {
 			props.list();
 		});
 	});
-	const clickedSuggested = (e) => {
-		console.log(props.item.title);
-
+	const clickedSuggested = () => {
 		props.suggested(props.item.title);
 	};
 

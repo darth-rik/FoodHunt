@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Close from "./ClosePanes";
 import CuisineCheckBox from "./CuisineCheckBox";
 import MealTypeCheckBox from "./MealTypeCheckBox";
+import Checkbox from "../components/Checkbox";
 
 const FilterSidePane = (props) => {
 	useEffect(() => {
@@ -171,7 +172,7 @@ const FilterSidePane = (props) => {
 				<div className='text-2xl flex-wrap overflow-y-scroll h-40'>
 					{cuisines.map((item) => (
 						<div className='mb-8 flex items-center mr-16 ' key={item.key}>
-							<CuisineCheckBox
+							<Checkbox
 								name={item.name}
 								checked={checkedItemsCuisine.get(item.name)}
 								onChange={handleCuisines}
@@ -186,7 +187,7 @@ const FilterSidePane = (props) => {
 				<div className='text-2xl flex-wrap overflow-y-scroll h-40'>
 					{mealType.map((item) => (
 						<div className='mb-8 flex items-center mr-16 ' key={item.key}>
-							<MealTypeCheckBox
+							<Checkbox
 								name={item.name}
 								checked={checkedItemsMeal.get(item.name)}
 								onChange={handleMeals}

@@ -1,9 +1,10 @@
 import { React, useState, useEffect, useContext } from "react";
 import Pane from "../components/Pane";
 import RecipeDataContext from "../context/recipeData/recipeDataContext";
+import Popup from "../components/PopUp";
 import Loader from "../components/Loader";
 
-const Recipe = ({ match }) => {
+const Recipe = ({ match, history }) => {
 	const recipeDataContext = useContext(RecipeDataContext);
 	const [isOpen, setIsOpen] = useState(false);
 	const {
@@ -38,23 +39,13 @@ const Recipe = ({ match }) => {
 
 	const { title, servings, readyInMinutes, healthScore, image } = recipeData;
 
-	// return () => {
-	// 	document.body.removeEventListener("click", (e) => {
-	// 		if (
-	// 			isOpen &&
-	// 			!e.target.classList.contains("material-icons") &&
-	// 			!e.target.classList.contains("bg-gray-900") &&
-	// 			!e.target.classList.contains("mb-10")
-	// 		) {
-	// 			setIsOpen(false);
-	// 		}
-	// 	});
-	// };
+	const reset = { bool: false, msg: "" };
 
 	const [isEquipmentsOpen, setIsEquipmentsOpen] = useState(false);
 	const [isRequirementsOpen, setIsRequirementsOpen] = useState(false);
 	const [fav, setFav] = useState(false);
-	const [favPopUp, setFavPopUp] = useState(false);
+	const [favPopUp, setFavPopUp] = useState(reset);
+	const [removePopUp, setRemovePopUp] = useState(reset);
 
 	const clicked = () => {
 		if (!isOpen) {
@@ -62,6 +53,9 @@ const Recipe = ({ match }) => {
 		} else {
 			setIsOpen(false);
 		}
+	};
+	const closePane = () => {
+		if (isOpen) setIsOpen(false);
 	};
 	const toggleEquipments = () => {
 		if (!isEquipmentsOpen) {
@@ -83,45 +77,59 @@ const Recipe = ({ match }) => {
 			favsData.splice(index, 1);
 			localStorage.setItem("favsData", JSON.stringify(favsData));
 			setFav(false);
+			setRemovePopUp({
+				bool: true,
+				msg: "Removed Recipe from Favourites",
+			});
 		} else {
 			favsData.push(match.params.id);
 			localStorage.setItem("favsData", JSON.stringify(favsData));
-			displayFavNotif();
+			setFavPopUp({
+				bool: true,
+				msg: "Added Recipe to Favourites!",
+			});
 			setFav(true);
 		}
 	};
 
-	const displayFavNotif = () => {
-		setTimeout(() => {
-			setFavPopUp(false);
-		}, 1000);
-		setFavPopUp(true);
+	const dataReceive = () => {
+		setFavPopUp(reset);
+		setRemovePopUp(reset);
 	};
 
 	return (
 		<div className='overflow-x-hidden min-h-screen'>
 			<Pane isOpen={isOpen} />
+
+			{favPopUp.bool && (
+				<Popup dataReceive={dataReceive} errmessage={favPopUp.msg} />
+			)}
+			{removePopUp.bool && (
+				<Popup dataReceive={dataReceive} errmessage={removePopUp.msg} />
+			)}
 			<div
+				onClick={closePane}
 				style={{
 					marginLeft: `${isOpen ? "60%" : "0"}`,
 					opacity: `${isOpen ? ".7 " : "1"}`,
 				}}
 				className='bg-gray-800 h-80 min-w-full container transition-all md:bg-desktop-header md:bg-no-repeat md:bg-cover '
 			>
-				{favPopUp && (
-					<div className='fixed top:0 left-0 bg-black text-center w-full p-12 z-50'>
-						<p className='inline-block w-5/ md:text-2xl'>
-							Added Recipe to Favourites!
-						</p>
-					</div>
-				)}
+				<div className='flex justify-between '>
+					<span
+						onClick={clicked}
+						className='material-icons text-5xl ml-4 mt-4 mb-8 md:ml-16 cursor-pointer'
+					>
+						menu
+					</span>
 
-				<span
-					onClick={clicked}
-					className='material-icons text-5xl ml-4 mt-4 mb-8 md:ml-16 cursor-pointer'
-				>
-					menu
-				</span>
+					<a
+						href='/recipes'
+						className='material-icons text-5xl mr-4 mt-4 mb-8 md:mlr-16 cursor-pointer'
+					>
+						keyboard_backspace
+					</a>
+				</div>
 
 				{loading ? (
 					<Loader />

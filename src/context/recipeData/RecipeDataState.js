@@ -43,8 +43,8 @@ const RecipeDataState = (props) => {
 
 		dispatch({ type: GET_EQUIPMENTS, payload: data.equipment[0] });
 	};
-	const removeItem = (bool) => {
-		dispatch({ type: REMOVE_RECIPE, payload: bool });
+	const removeItem = () => {
+		dispatch({ type: REMOVE_RECIPE });
 	};
 	return (
 		<RecipeDataContext.Provider
