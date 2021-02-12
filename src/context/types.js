@@ -2,3 +2,5 @@ export const GET_RECIPE_INFO = "GET_RECIPE_INFO";
 export const GET_INGREDIENTS = "GET_INGREDIENTS";
 export const GET_EQUIPMENTS = "GET_EQUIPMENTS";
 export const REMOVE_RECIPE = "REMOVE_RECIPE";
+export const SET_ERROR = "SET_ERROR";
+export const REMOVE_ERROR = "REMOVE_ERROR";

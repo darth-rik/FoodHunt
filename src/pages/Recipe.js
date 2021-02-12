@@ -13,6 +13,9 @@ const Recipe = ({ match, history }) => {
 		getRecipeEquipments,
 		loading,
 		recipeData,
+		error,
+		errmessage,
+		removeError,
 		recipeEquipments,
 		recipeIngredients,
 	} = recipeDataContext;
@@ -95,6 +98,7 @@ const Recipe = ({ match, history }) => {
 	const dataReceive = () => {
 		setFavPopUp(reset);
 		setRemovePopUp(reset);
+		removeError();
 	};
 
 	return (
@@ -107,6 +111,8 @@ const Recipe = ({ match, history }) => {
 			{removePopUp.bool && (
 				<Popup dataReceive={dataReceive} errmessage={removePopUp.msg} />
 			)}
+
+			{error && <Popup errmessage={errmessage} dataReceive={dataReceive} />}
 			<div
 				onClick={closePane}
 				style={{
@@ -144,7 +150,7 @@ const Recipe = ({ match, history }) => {
 							<span
 								onClick={toggleFav}
 								style={{ color: fav ? "red" : "white" }}
-								className='material-icons absolute right-2 top-8 text-3xl cursor-pointer shadow-md  '
+								className='material-icons absolute right-2 top-8 text-3xl cursor-pointer   '
 							>
 								favorite
 							</span>

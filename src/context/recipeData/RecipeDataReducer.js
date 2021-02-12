@@ -3,6 +3,8 @@ import {
 	GET_INGREDIENTS,
 	GET_EQUIPMENTS,
 	REMOVE_RECIPE,
+	SET_ERROR,
+	REMOVE_ERROR,
 } from "../types";
 
 export default (state, action) => {
@@ -30,6 +32,18 @@ export default (state, action) => {
 			return {
 				...state,
 				removeRecipe: true,
+			};
+		case SET_ERROR:
+			return {
+				...state,
+				error: true,
+				loading: false,
+				errmessage: action.payload,
+			};
+		case REMOVE_ERROR:
+			return {
+				...state,
+				error: false,
 			};
 
 		default:
