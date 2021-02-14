@@ -5,6 +5,7 @@ import FilterSidePane from "../components/FilterSidePane";
 import SortSidePane from "../components/SortSidePane";
 import Card from "../components/Card";
 import Loader from "../components/Loader";
+import Footer from "../components/Footer";
 
 const RecipeResults = () => {
 	const [recipeResults, setRecipeResults] = useState([]);
@@ -46,22 +47,25 @@ const RecipeResults = () => {
 	const openSort = () => {
 		setSortIsOpen(true);
 	};
-	const closeAll = () => {
-		setSortIsOpen(false);
-		setFilterIsOpen(false);
-	};
 	const openFilter = () => {
 		setFilterIsOpen(true);
 	};
 
-	const closeSort = () => {
+	const closeAll = () => {
 		setSortIsOpen(false);
-	};
-	const setLoading = () => {
-		setIsLoading(true);
+		setFilterIsOpen(false);
 	};
 
+	// const closeSort = () => {
+	// 	setSortIsOpen(false);
+	// };
+	// const setLoading = () => {
+	// 	setIsLoading(true);
+	// };
+
 	const done = async () => {
+		//Get the sort / filter checked options and the query string from local storage.
+
 		const query = JSON.parse(localStorage.getItem("query"));
 		const checkedOptionSort = JSON.parse(localStorage.getItem("checkedOption"));
 		const checkedOptionCuisine = JSON.parse(
@@ -101,6 +105,8 @@ const RecipeResults = () => {
 		}
 
 		setIsLoading(true);
+		setRecipeResults([]);
+
 		closeAll();
 	};
 	return (
@@ -111,13 +117,7 @@ const RecipeResults = () => {
 				closeAll={closeAll}
 				done={done}
 			/>
-			<SortSidePane
-				sortIsOpen={sortIsOpen}
-				closeAll={closeAll}
-				closeSort={closeSort}
-				setLoading={setLoading}
-				done={done}
-			/>
+			<SortSidePane sortIsOpen={sortIsOpen} closeAll={closeAll} done={done} />
 			<div
 				style={{
 					marginLeft: isOpen ? "60%" : "0",
@@ -130,6 +130,8 @@ const RecipeResults = () => {
 				</div>
 				<div style={{ pointerEvents: isOpen && "none" }}>
 					<div className='flex justify-between text-black pt-6 mx-8 mb-8 md:mb-16'>
+						{/* Sort Panel */}
+
 						<p className='flex items-center text-2xl '>
 							Sort{" "}
 							<span
@@ -140,6 +142,9 @@ const RecipeResults = () => {
 								keyboard_arrow_down
 							</span>
 						</p>
+
+						{/* Filter Panel */}
+
 						<p className='flex items-center text-2xl '>
 							Filter{" "}
 							<span
@@ -152,16 +157,15 @@ const RecipeResults = () => {
 						</p>
 					</div>
 
-					{isLoading && !dataFound ? <Loader /> : null}
 					{dataFound ? (
 						<h1 className='text-black text-center md:text-3xl'>{errmessage}</h1>
 					) : (
 						<Card results={recipeResults} />
 					)}
+					{isLoading && !dataFound ? <Loader /> : null}
 				</div>
-				<div className='bg-gray-800 text-center p-12 absolute left-0 bottom-0 w-full '>
-					Made By Rik
-				</div>
+
+				<Footer />
 			</div>
 		</div>
 	);

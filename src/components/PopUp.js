@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 const PopUp = (props) => {
 	useEffect(() => {
 		setTimeout(() => {
-			props.dataReceive();
+			props.closePopup();
 		}, 3000);
 	}, []);
 	return (

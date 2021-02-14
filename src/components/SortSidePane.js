@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+
 import Close from "./ClosePanes";
 import Checkbox from "./Checkbox";
 
@@ -9,17 +9,6 @@ const SortSidePane = (props) => {
 	};
 	const [checkedItems, setCheckedItems] = useState(new Map());
 
-	// let str = "";
-	// checkedItems.forEach((x, k) => {
-	// 	if (x) {
-	// 		str += k + ",";
-	// 	}
-	// });
-	// console.log(str.slice(0, str.length - 1));
-	// let Data = localStorage.getItem("checkedOptions");
-	// setCheckedItems(Data);
-
-	// const query = JSON.parse(localStorage.getItem("query"));
 	useEffect(() => {
 		if (localStorage.checkedData)
 			setCheckedItems(new Map(JSON.parse(localStorage.checkedData)));
@@ -41,9 +30,7 @@ const SortSidePane = (props) => {
 	const handleChange = (e) => {
 		const item = e.target.name;
 		const isChecked = e.target.checked;
-		// setCheckedItems((prevState) => {
-		// 	return new Map(prevState).set(item, isChecked);
-		// });
+
 		setCheckedItems(new Map().set(item, isChecked));
 	};
 
@@ -54,35 +41,17 @@ const SortSidePane = (props) => {
 		checkedItems.forEach(async (value, item) => {
 			if (value) {
 				localStorage.setItem("checkedOption", JSON.stringify(item));
-
-				// const checkedOption = JSON.parse(localStorage.getItem("checkedOption"));
-
-				// const res = await fetch(
-				// 	`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${query}&addRecipeInformation=true&sort=${checkedOption}&number=5`
-				// );
-
-				// const data = await res.json();
-				// if (data) {
-				// 	localStorage.setItem("recipesResults", JSON.stringify(data.results));
-				// } else {
-				// }
 			} else {
 				localStorage.removeItem("checkedOption");
-				// const res = await fetch(
-				// 	`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&number=10&query=${query}&addRecipeInformation=true`
-				// );
-				// const data = await res.json();
-
-				// localStorage.setItem("recipesResults", JSON.stringify(data.results));
 			}
-			// props.setLoading();
+
 			props.done();
 		});
 	};
 
 	return (
 		<div
-			style={{ width: `${props.sortIsOpen ? "100%" : "0"}` }}
+			style={{ width: props.sortIsOpen ? "100%" : "0" }}
 			className=' text-black h-full overflow-x-hidden fixed z-30 bg-white transition-all  '
 		>
 			<Close close={close} />

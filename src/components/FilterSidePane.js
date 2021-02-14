@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Close from "./ClosePanes";
-import CuisineCheckBox from "./CuisineCheckBox";
-import MealTypeCheckBox from "./MealTypeCheckBox";
+
 import Checkbox from "../components/Checkbox";
 
 const FilterSidePane = (props) => {
@@ -107,20 +106,6 @@ const FilterSidePane = (props) => {
 			key: 4,
 			label: "Breakfast",
 		},
-
-		// side dish
-		//
-		// appetizer
-		// salad
-		// bread
-		//
-		// soup
-		// beverage
-		// sauce
-		// marinade
-		// fingerfood
-		// snack
-		// drink
 	];
 	const handleCuisines = (e) => {
 		const itemCuisine = e.target.name;
@@ -135,12 +120,15 @@ const FilterSidePane = (props) => {
 		setCheckedItemsMeal(new Map().set(itemMeals, isCheckedMeals));
 	};
 	const done = () => {
+		// Save checked options to local storage
 		localStorage.checkedDataCuisine = JSON.stringify(
 			Array.from(checkedItemsCuisine.entries())
 		);
 		localStorage.checkedDataMeals = JSON.stringify(
 			Array.from(checkedItemsMeal.entries())
 		);
+
+		// Put comma after every checked option except the last one
 		let string = "";
 		checkedItemsCuisine.forEach((value, item) => {
 			if (value) {
@@ -163,10 +151,13 @@ const FilterSidePane = (props) => {
 	};
 	return (
 		<div
-			style={{ width: `${props.filterIsOpen ? "100%" : "0"}` }}
+			style={{ width: props.filterIsOpen ? "100%" : "0" }}
 			className=' text-black h-full fixed top-0 left-0 overflow-x-hidden z-30 bg-white transition-all  mb-8 '
 		>
 			<Close close={close} />
+
+			{/* Filter Cuisines */}
+
 			<div className='mx-8 mt-24 mb-8'>
 				<h1 className='text-3xl mb-8'>Filter By Cuisines</h1>
 				<div className='text-2xl flex-wrap overflow-y-scroll h-40'>
@@ -182,8 +173,10 @@ const FilterSidePane = (props) => {
 					))}
 				</div>
 			</div>
+			{/* Filter Meal Types */}
+
 			<div className='mx-8 mt-20 mb-8'>
-				<h1 className='text-3xl mb-8'>Filter By Diet</h1>
+				<h1 className='text-3xl mb-8'>Filter By Meal Type</h1>
 				<div className='text-2xl flex-wrap overflow-y-scroll h-40'>
 					{mealType.map((item) => (
 						<div className='mb-8 flex items-center mr-16 ' key={item.key}>

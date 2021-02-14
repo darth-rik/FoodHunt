@@ -1,7 +1,6 @@
 import {
 	GET_RECIPE_INFO,
 	GET_INGREDIENTS,
-	GET_EQUIPMENTS,
 	REMOVE_RECIPE,
 	SET_ERROR,
 	REMOVE_ERROR,
@@ -22,12 +21,7 @@ export default (state, action) => {
 				recipeIngredients: action.payload,
 				loading: false,
 			};
-		case GET_EQUIPMENTS:
-			return {
-				...state,
-				recipeEquipments: action.payload,
-				loading: false,
-			};
+
 		case REMOVE_RECIPE:
 			return {
 				...state,

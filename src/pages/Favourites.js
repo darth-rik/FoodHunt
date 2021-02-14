@@ -19,13 +19,13 @@ const Favourites = () => {
 				setIsLoading(false);
 				setErrmessage("No recipe has been added to favourites yet.");
 			} else {
+				// Put comma after ids except the last one
 				let string = "";
 				favsData.forEach((id) => {
 					string += id + ",";
 				});
 				const favId = string.slice(0, string.length - 1);
 
-				// if (favId.length > 0) {
 				try {
 					const res = await fetch(
 						`https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.REACT_APP_API_KEY}&ids=${favId}`
@@ -42,11 +42,6 @@ const Favourites = () => {
 					setDataFound(true);
 					setErrmessage(err.message);
 				}
-				// } else {
-				// 	setDataFound(true);
-				// 	setFavResults([]);
-				// 	setIsLoading(false);
-				// }
 			}
 		};
 		fetchData();

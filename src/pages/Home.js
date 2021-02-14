@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Header from "../components/Header";
 import Pane from "../components/Pane";
@@ -14,6 +14,13 @@ const Home = (props) => {
 	const [dataReceived, setDataReceived] = useState("");
 	const [errmessage, setErrmessage] = useState("");
 
+	useEffect(() => {
+		// Cleanup to avoid memory leak error
+		return () => {
+			setIsAutoSuggest([]);
+		};
+	}, []);
+
 	const togglePane = () => {
 		if (!isOpen) setIsOpen(true);
 		else setIsOpen(false);
@@ -28,10 +35,9 @@ const Home = (props) => {
 			else throw new Error(data.message);
 		} catch (err) {
 			setDataReceived("error");
-
 			setErrmessage(err.message);
 		}
-	}, 500);
+	}, 300);
 	const suggested = (title) => {
 		setIsValue(title);
 		setIsAutoSuggest([]);
@@ -75,7 +81,7 @@ const Home = (props) => {
 		}
 	};
 
-	const dataReceive = () => {
+	const closePopup = () => {
 		setDataReceived("");
 	};
 
@@ -83,7 +89,7 @@ const Home = (props) => {
 		<div className=' overflow-hidden'>
 			<Pane isOpen={isOpen} />
 			{dataReceived === "error" && (
-				<Popup dataReceive={dataReceive} errmessage={errmessage} />
+				<Popup closePopup={closePopup} errmessage={errmessage} />
 			)}
 			<div
 				style={{
@@ -97,9 +103,13 @@ const Home = (props) => {
 					style={{ pointerEvents: isOpen ? "none" : null }}
 					className='text-center mx-8 mb-28 mt-44 md:mb-32 '
 				>
+					{/* Header */}
+
 					<h1 className='text-4xl leading-normal tracking-wide mb-12 md:mb-16 md:text-5xl md:leading-relaxed md:w-2/3 md:m-auto lg:text-5xl lg:leading-loose 2xl:tracking-wider 2xl:w-1/3'>
 						In the mood to cook great Food?
 					</h1>
+
+					{/* Search Bar */}
 
 					<form
 						onSubmit={search}

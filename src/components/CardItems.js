@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
+
 import RecipeDataContext from "../context/recipeData/recipeDataContext";
 
 const CardItems = ({
@@ -9,7 +10,8 @@ const CardItems = ({
 		servings,
 		readyInMinutes,
 		healthScore,
-		spoonacularScore,
+		cuisines,
+		dishTypes,
 		image,
 	},
 	removeFav,
@@ -71,6 +73,26 @@ const CardItems = ({
 								{readyInMinutes} mins
 							</span>
 						</p>
+					</div>
+					<div className='flex justify-center flex-wrap p-4 border-b-2 border-gray-100'>
+						{cuisines.map((el, ind) => (
+							<p
+								className='bg-gray-700 px-2 text-white rounded-md m-2  '
+								key={ind}
+							>
+								{el}
+							</p>
+						))}
+					</div>
+					<div className=' flex justify-center flex-wrap p-4 mb-2'>
+						{dishTypes.map((el, ind) => (
+							<p
+								className='px-2 bg-red-600 m-2 text-white rounded-md'
+								key={ind}
+							>
+								{el}{" "}
+							</p>
+						))}
 					</div>
 				</div>
 			</Link>

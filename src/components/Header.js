@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 const Header = (props) => {
 	const openPane = () => {
@@ -16,10 +15,6 @@ const Header = (props) => {
 			<h1 className=' text-4xl font-medium self-end  '>RecipeApp</h1>
 		</div>
 	);
-};
-
-Header.propTypes = {
-	clicked: PropTypes.func.isRequired,
 };
 
 export default Header;
