@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import RecipeDataContext from "../context/recipeData/recipeDataContext";
@@ -22,6 +22,7 @@ const CardItems = ({
 	const FavID = JSON.parse(localStorage.getItem("favsData"));
 
 	useEffect(() => {
+		//Check if recipe has been favourited or not
 		if (FavID) {
 			FavID.forEach((currId) => {
 				if (parseInt(currId) === id) {
@@ -33,15 +34,15 @@ const CardItems = ({
 	const removeFavourite = () => {
 		let getId = FavID.indexOf(id.toString());
 
-		FavID.splice(getId, 1);
+		const removedId = FavID.splice(getId, 1);
 
 		localStorage.setItem("favsData", JSON.stringify(FavID));
-		removeItem();
+		removeItem(removedId[0]);
 	};
 	return (
 		<div>
 			<Link to={`recipe/${id}`}>
-				<div className='rounded-xl shadow-xl overflow-hidden mb-8 max-h-screen '>
+				<div className='rounded-xl shadow-xl overflow-hidden mb-8 '>
 					<div className='relative'>
 						<img className='mb-4 min-w-full ' src={image} alt='' />
 						{isFav && (
@@ -84,7 +85,7 @@ const CardItems = ({
 							</p>
 						))}
 					</div>
-					<div className=' flex justify-center flex-wrap p-4 mb-2'>
+					<div className=' flex justify-center flex-wrap p-2 mb-2'>
 						{dishTypes.map((el, ind) => (
 							<p
 								className='px-2 bg-red-600 m-2 text-white rounded-md'

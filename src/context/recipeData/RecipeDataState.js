@@ -5,17 +5,18 @@ import RecipeDataReducer from "./RecipeDataReducer";
 
 import {
 	GET_RECIPE_INFO,
-	GET_INGREDIENTS,
 	REMOVE_RECIPE,
 	SET_ERROR,
 	REMOVE_ERROR,
+	SET_FAV,
+	CLEAR_RECIPE,
 } from "../types";
 
 const RecipeDataState = (props) => {
 	const initialState = {
-		recipeData: {},
-		recipeIngredients: [],
+		recipeData: null,
 
+		favourites: null,
 		removeRecipe: false,
 		loading: true,
 		error: false,
@@ -24,6 +25,7 @@ const RecipeDataState = (props) => {
 	const [state, dispatch] = useReducer(RecipeDataReducer, initialState);
 
 	const getRecipeInfo = async (id) => {
+		clearRecipe();
 		try {
 			const res = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${process.env.REACT_APP_API_KEY}&includeNutrition=false
         `);
@@ -38,16 +40,77 @@ const RecipeDataState = (props) => {
 		}
 	};
 
-	const getRecipeIngredients = async (id) => {
-		const res = await fetch(`https://api.spoonacular.com/recipes/${id}/ingredientWidget.json?apiKey=${process.env.REACT_APP_API_KEY}
-        `);
-		const data = await res.json();
-
-		dispatch({ type: GET_INGREDIENTS, payload: data.ingredients });
+	const clearRecipe = () => {
+		dispatch({ type: CLEAR_RECIPE });
 	};
 
-	const removeItem = () => {
-		dispatch({ type: REMOVE_RECIPE });
+	const setFavourites = async () => {
+		const favsData = JSON.parse(localStorage.getItem("favsData"));
+		if (!favsData || favsData.length === 0) {
+			setError("No recipe has been added to favourites yet.");
+		} else {
+			const favIds = favsData.join(",");
+			try {
+				const res = await fetch(
+					`https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.REACT_APP_API_KEY}&ids=${favIds}`
+				);
+				const data = await res.json();
+				if (res.status === 200) {
+					dispatch({
+						type: SET_FAV,
+						payload: data,
+					});
+
+					removeError();
+				} else {
+					throw new Error(data.message);
+				}
+			} catch (err) {
+				dispatch({ type: SET_ERROR, payload: err.message });
+			}
+		}
+	};
+
+	const sortRecipes = async (query, sort, cuisine, meal) => {
+		try {
+			const res = await fetch(
+				`https://api.spoonacular.com/recipes/complexSearch?apiKey=${
+					process.env.REACT_APP_API_KEY
+				}&query=${query}&addRecipeInformation=true&${
+					sort ? `sort=${sort}&` : ""
+				}${cuisine ? `cuisine=${cuisine}&` : ""}${
+					meal ? `type=${meal}&` : ""
+				}number=5`
+			);
+			console.log(res);
+			const data = await res.json();
+			console.log(data);
+			if (res.status === 200) {
+				if (data.totalResults === 0) {
+					dispatch({
+						type: SET_ERROR,
+						payload:
+							"No Recipes Found. Please search with different sort/filter parameters.",
+					});
+				} else {
+					localStorage.setItem("recipesResults", JSON.stringify(data.results));
+					removeError();
+				}
+			} else {
+				throw new Error(data.message);
+			}
+		} catch (err) {
+			dispatch({ type: SET_ERROR, payload: err.message });
+		}
+	};
+
+	const removeItem = (id) => {
+		dispatch({ type: REMOVE_RECIPE, payload: id });
+		setFavourites();
+	};
+
+	const setError = (message) => {
+		dispatch({ type: SET_ERROR, payload: message });
 	};
 
 	const removeError = () => {
@@ -57,18 +120,20 @@ const RecipeDataState = (props) => {
 		<RecipeDataContext.Provider
 			value={{
 				recipeData: state.recipeData,
+				favourites: state.favourites,
 
-				recipeIngredients: state.recipeIngredients,
 				loading: state.loading,
 				removeRecipe: state.removeRecipe,
 				error: state.error,
 				errmessage: state.errmessage,
 
 				getRecipeInfo,
+				setFavourites,
 
-				getRecipeIngredients,
 				removeItem,
 				removeError,
+				setError,
+				sortRecipes,
 			}}
 		>
 			{props.children}

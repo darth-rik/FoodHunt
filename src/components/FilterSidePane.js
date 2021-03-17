@@ -128,7 +128,6 @@ const FilterSidePane = (props) => {
 			Array.from(checkedItemsMeal.entries())
 		);
 
-		// Put comma after every checked option except the last one
 		let string = "";
 		checkedItemsCuisine.forEach((value, item) => {
 			if (value) {

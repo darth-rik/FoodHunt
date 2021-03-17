@@ -12,7 +12,7 @@ const Header = (props) => {
 			>
 				{props.isOpen ? "close" : "menu"}
 			</span>
-			<h1 className=' text-4xl font-medium self-end  '>RecipeApp</h1>
+			<h1 className=' text-4xl font-medium self-end  '>FoodHunt</h1>
 		</div>
 	);
 };

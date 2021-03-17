@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import Header from "../components/Header";
 import Pane from "../components/Pane";
 import FilterSidePane from "../components/FilterSidePane";
@@ -7,7 +7,17 @@ import Card from "../components/Card";
 import Loader from "../components/Loader";
 import Footer from "../components/Footer";
 
+import RecipeDataContext from "../context/recipeData/recipeDataContext";
+
 const RecipeResults = () => {
+	const recipeDataContext = useContext(RecipeDataContext);
+	const {
+		error,
+		errmessage,
+		setError,
+		sortRecipes,
+		removeError,
+	} = recipeDataContext;
 	const [recipeResults, setRecipeResults] = useState([]);
 
 	useEffect(() => {
@@ -16,11 +26,12 @@ const RecipeResults = () => {
 				const data = JSON.parse(localStorage.getItem("recipesResults"));
 				if (!data || data.length === 0) {
 					setIsLoading(false);
-					setDataFound(true);
-					setErrmessage("No recipes to show. Please try searching again.");
+
+					setError("No recipes to show. Please try searching again.");
 				} else {
 					setRecipeResults(data);
 					setIsLoading(false);
+					removeError();
 				}
 			}, 2000);
 
@@ -33,8 +44,6 @@ const RecipeResults = () => {
 	const [sortIsOpen, setSortIsOpen] = useState(false);
 	const [filterIsOpen, setFilterIsOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
-	const [dataFound, setDataFound] = useState(false);
-	const [errmessage, setErrmessage] = useState("");
 
 	const [isOpen, setIsOpen] = useState(false);
 	const togglePane = () => {
@@ -56,13 +65,6 @@ const RecipeResults = () => {
 		setFilterIsOpen(false);
 	};
 
-	// const closeSort = () => {
-	// 	setSortIsOpen(false);
-	// };
-	// const setLoading = () => {
-	// 	setIsLoading(true);
-	// };
-
 	const done = async () => {
 		//Get the sort / filter checked options and the query string from local storage.
 
@@ -74,35 +76,13 @@ const RecipeResults = () => {
 		const checkedOptionMeal = JSON.parse(
 			localStorage.getItem("checkedOptionMeals")
 		);
-		try {
-			const res = await fetch(
-				`https://api.spoonacular.com/recipes/complexSearch?apiKey=${
-					process.env.REACT_APP_API_KEY
-				}&query=${query}&addRecipeInformation=true&${
-					checkedOptionSort ? `sort=${checkedOptionSort}&` : ""
-				}${checkedOptionCuisine ? `cuisine=${checkedOptionCuisine}&` : ""}${
-					checkedOptionMeal ? `type=${checkedOptionMeal}&` : ""
-				}number=5`
-			);
 
-			const data = await res.json();
-			if (res.status === 200) {
-				if (data.totalResults === 0) {
-					setDataFound(true);
-					setErrmessage(
-						"No Recipes Found. Please search with different sort/filter parameters."
-					);
-				} else {
-					setDataFound(false);
-					localStorage.setItem("recipesResults", JSON.stringify(data.results));
-				}
-			} else {
-				throw new Error(data.message);
-			}
-		} catch (err) {
-			setErrmessage(err.message);
-			setDataFound(true);
-		}
+		sortRecipes(
+			query,
+			checkedOptionSort,
+			checkedOptionCuisine,
+			checkedOptionMeal
+		);
 
 		setIsLoading(true);
 		setRecipeResults([]);
@@ -156,13 +136,14 @@ const RecipeResults = () => {
 							</span>
 						</p>
 					</div>
-
-					{dataFound ? (
+					{/*  Recipe Cards  */}
+					{isLoading ? (
+						<Loader />
+					) : error ? (
 						<h1 className='text-black text-center md:text-3xl'>{errmessage}</h1>
 					) : (
 						<Card results={recipeResults} />
 					)}
-					{isLoading && !dataFound ? <Loader /> : null}
 				</div>
 
 				<Footer />

@@ -6,51 +6,22 @@ import Card from "../components/Card";
 import Loader from "../components/Loader";
 
 import RecipeDataContext from "../context/recipeData/recipeDataContext";
+import Footer from "../components/Footer";
 
 const Favourites = () => {
 	const recipeDataContext = useContext(RecipeDataContext);
-	const { removeItem } = recipeDataContext;
-	const favsData = JSON.parse(localStorage.getItem("favsData"));
+	const {
+		loading,
+		error,
+		errmessage,
+		favourites,
+		setFavourites,
+	} = recipeDataContext;
 
 	useEffect(() => {
-		const fetchData = async () => {
-			if (!favsData || favsData.length === 0) {
-				setDataFound(true);
-				setIsLoading(false);
-				setErrmessage("No recipe has been added to favourites yet.");
-			} else {
-				// Put comma after ids except the last one
-				let string = "";
-				favsData.forEach((id) => {
-					string += id + ",";
-				});
-				const favId = string.slice(0, string.length - 1);
+		setFavourites();
+	}, []);
 
-				try {
-					const res = await fetch(
-						`https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.REACT_APP_API_KEY}&ids=${favId}`
-					);
-					const data = await res.json();
-					if (res.status === 200) {
-						setFavResults(data);
-						setIsLoading(false);
-					} else {
-						throw new Error(data.message);
-					}
-				} catch (err) {
-					setIsLoading(false);
-					setDataFound(true);
-					setErrmessage(err.message);
-				}
-			}
-		};
-		fetchData();
-	}, [removeItem]);
-
-	const [isLoading, setIsLoading] = useState(true);
-	const [dataFound, setDataFound] = useState(false);
-	const [favResults, setFavResults] = useState([]);
-	const [errmessage, setErrmessage] = useState("");
 	const [isOpen, setIsOpen] = useState(false);
 
 	const togglePane = () => {
@@ -80,21 +51,20 @@ const Favourites = () => {
 					<hr />
 				</div>
 				<div style={{ pointerEvents: isOpen && "none" }}>
-					{isLoading && !dataFound ? <Loader /> : null}
-
-					{dataFound ? (
+					{!favourites || loading ? (
+						<Loader />
+					) : error ? (
 						<div className='text-black text-center p-8 md:text-3xl  '>
 							{errmessage}
 						</div>
 					) : (
 						<div className='py-12'>
-							<Card results={favResults} favs={true} />
+							<Card results={favourites} favs={true} />
 						</div>
 					)}
 				</div>
-				<div className='bg-gray-800 text-center p-12 absolute left-0 bottom-0 w-full '>
-					Made By Rik
-				</div>
+
+				<Footer />
 			</div>
 		</div>
 	);

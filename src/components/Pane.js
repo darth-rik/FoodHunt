@@ -20,11 +20,11 @@ const Pane = (props) => {
 						Favourites
 					</li>
 				</Link>
-				<a href='/recipes'>
+				<Link to='/recipes'>
 					<li className='mb-10 hover:bg-gray-700 p-4 lg:p-8 transition-all'>
 						Recipes
 					</li>
-				</a>
+				</Link>
 			</ul>
 		</div>
 	);

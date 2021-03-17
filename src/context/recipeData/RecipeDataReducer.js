@@ -1,9 +1,10 @@
 import {
 	GET_RECIPE_INFO,
-	GET_INGREDIENTS,
 	REMOVE_RECIPE,
 	SET_ERROR,
 	REMOVE_ERROR,
+	SET_FAV,
+	CLEAR_RECIPE,
 } from "../types";
 
 export default (state, action) => {
@@ -15,17 +16,28 @@ export default (state, action) => {
 				loading: false,
 			};
 
-		case GET_INGREDIENTS:
+		case CLEAR_RECIPE:
 			return {
 				...state,
-				recipeIngredients: action.payload,
+				recipeData: null,
+				recipeIngredients: [],
+				laoding: true,
+			};
+
+		case SET_FAV:
+			return {
+				...state,
+				favourites: action.payload,
 				loading: false,
 			};
 
 		case REMOVE_RECIPE:
 			return {
 				...state,
-				removeRecipe: true,
+				favourites: state.favourites.filter(
+					(fav) => fav.id.toString() !== action.payload
+				),
+				loading: true,
 			};
 		case SET_ERROR:
 			return {
@@ -38,6 +50,7 @@ export default (state, action) => {
 			return {
 				...state,
 				error: false,
+				errmessage: "",
 			};
 
 		default:

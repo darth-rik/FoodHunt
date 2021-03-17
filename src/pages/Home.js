@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
+import RecipeDataContext from "../context/recipeData/recipeDataContext";
 import Header from "../components/Header";
 import Pane from "../components/Pane";
 import Popup from "../components/PopUp";
@@ -7,14 +8,16 @@ import _ from "lodash";
 import AutoCompleteList from "../components/AutoCompleteList";
 
 const Home = (props) => {
+	const recipeDataContext = useContext(RecipeDataContext);
+
+	const { error, errmessage, removeError, setError } = recipeDataContext;
 	const [isAutoSuggest, setIsAutoSuggest] = useState([]);
 	const [isValue, setIsValue] = useState("");
 	const [isListOpen, setIsListOpen] = useState(true);
 	const [isOpen, setIsOpen] = useState(false);
-	const [dataReceived, setDataReceived] = useState("");
-	const [errmessage, setErrmessage] = useState("");
 
 	useEffect(() => {
+		removeError();
 		// Cleanup to avoid memory leak error
 		return () => {
 			setIsAutoSuggest([]);
@@ -34,8 +37,7 @@ const Home = (props) => {
 			if (res.status === 200) setIsAutoSuggest(data);
 			else throw new Error(data.message);
 		} catch (err) {
-			setDataReceived("error");
-			setErrmessage(err.message);
+			setError(err.message);
 		}
 	}, 300);
 	const suggested = (title) => {
@@ -66,8 +68,7 @@ const Home = (props) => {
 					localStorage.setItem("recipesResults", JSON.stringify(data.results));
 					localStorage.setItem("query", JSON.stringify(isValue));
 				} else {
-					setDataReceived("error");
-					setErrmessage(
+					setError(
 						"Oops! Seems like this recipe is not available. Please try searching for something else."
 					);
 				}
@@ -75,22 +76,21 @@ const Home = (props) => {
 				throw new Error(data.message);
 			}
 		} catch (err) {
-			setDataReceived("error");
-
-			setErrmessage(err.message);
+			setError(err.message);
 		}
 	};
 
 	const closePopup = () => {
-		setDataReceived("");
+		removeError();
 	};
 
 	return (
 		<div className=' overflow-hidden'>
 			<Pane isOpen={isOpen} />
-			{dataReceived === "error" && (
-				<Popup closePopup={closePopup} errmessage={errmessage} />
-			)}
+
+			{/* Alert */}
+			{error && <Popup closePopup={closePopup} errmessage={errmessage} />}
+
 			<div
 				style={{
 					marginLeft: isOpen ? "60%" : "0",
