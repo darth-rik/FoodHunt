@@ -16,10 +16,15 @@ const Favourites = () => {
 		errmessage,
 		favourites,
 		setFavourites,
+		removeError,
 	} = recipeDataContext;
 
 	useEffect(() => {
 		setFavourites();
+
+		return () => {
+			removeError();
+		};
 	}, []);
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -51,9 +56,9 @@ const Favourites = () => {
 					<hr />
 				</div>
 				<div style={{ pointerEvents: isOpen && "none" }}>
-					{!favourites || loading ? (
+					{loading ? (
 						<Loader />
-					) : error ? (
+					) : error || !favourites ? (
 						<div className='text-black text-center p-8 md:text-3xl  '>
 							{errmessage}
 						</div>

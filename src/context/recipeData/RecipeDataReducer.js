@@ -20,8 +20,8 @@ export default (state, action) => {
 			return {
 				...state,
 				recipeData: null,
-				recipeIngredients: [],
-				laoding: true,
+
+				loading: true,
 			};
 
 		case SET_FAV:
@@ -29,6 +29,8 @@ export default (state, action) => {
 				...state,
 				favourites: action.payload,
 				loading: false,
+				error: false,
+				errmessage: "",
 			};
 
 		case REMOVE_RECIPE:
@@ -51,6 +53,7 @@ export default (state, action) => {
 				...state,
 				error: false,
 				errmessage: "",
+				loading: true,
 			};
 
 		default:

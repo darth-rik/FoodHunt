@@ -17,7 +17,7 @@ const RecipeDataState = (props) => {
 		recipeData: null,
 
 		favourites: null,
-		removeRecipe: false,
+
 		loading: true,
 		error: false,
 		errmessage: "",
@@ -60,8 +60,6 @@ const RecipeDataState = (props) => {
 						type: SET_FAV,
 						payload: data,
 					});
-
-					removeError();
 				} else {
 					throw new Error(data.message);
 				}
@@ -87,6 +85,7 @@ const RecipeDataState = (props) => {
 			console.log(data);
 			if (res.status === 200) {
 				if (data.totalResults === 0) {
+					console.log("OK");
 					dispatch({
 						type: SET_ERROR,
 						payload:
@@ -123,7 +122,7 @@ const RecipeDataState = (props) => {
 				favourites: state.favourites,
 
 				loading: state.loading,
-				removeRecipe: state.removeRecipe,
+
 				error: state.error,
 				errmessage: state.errmessage,
 

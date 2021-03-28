@@ -31,7 +31,6 @@ const RecipeResults = () => {
 				} else {
 					setRecipeResults(data);
 					setIsLoading(false);
-					removeError();
 				}
 			}, 2000);
 
@@ -145,9 +144,8 @@ const RecipeResults = () => {
 						<Card results={recipeResults} />
 					)}
 				</div>
-
-				<Footer />
 			</div>
+			<Footer />
 		</div>
 	);
 };

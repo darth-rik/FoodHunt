@@ -14,7 +14,6 @@ const Recipe = ({ match }) => {
 	const {
 		getRecipeInfo,
 
-		loading,
 		recipeData,
 		error,
 		errmessage,
@@ -117,7 +116,7 @@ const Recipe = ({ match }) => {
 					</Link>
 				</div>
 
-				{!recipeData || loading ? (
+				{!recipeData ? (
 					<Loader />
 				) : (
 					<div className=' overflow-x-hidden relative '>
