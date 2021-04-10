@@ -1,70 +1,61 @@
-# Getting Started with Create React App
+![FoodHunt](./src/images/foodhunt-bg.png)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Live Site : [FoodHunt](https://food-hunt.netlify.app)
 
-## Available Scripts
+# FoodHunt
 
-In the project directory, you can run:
+FoodHunt is a web app where users can search for recipes and save their favourite ones for later.
 
-### `npm start`
+### `Technologies used`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The web app was created from scratch using :
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. **Reactjs** and the built in **Context-api** (used for better state management).
+2. **Tail Wind CSS** to style the web app.
+3. The food api from [Spoonacular](https://spoonacular.com/food-api). The api functions are well documented on their site and they also have a free plan.
+4. **Figma** to create the designs. A mockup of all the relevant screen sizes eg. mobile, desktop, tablet etc . were created. The images were downloaded from [Unsplash](https://unsplash.com)
 
-### `npm test`
+### `Features`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. ##### Auto-suggest Drop Down Menu
 
-### `npm run build`
+![Drop-Down](./src/images/drop-down.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Upon entering letters into the search bar the spoonacular api sends back a json response containing the auto-suggested recipes array. The task is to then map over the array, populating the drop-down menu. The value of the search bar changes to one of the suggested recipes when clicked.
+The auto-suggest menu closes when the user clicks outside the search bar.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. ##### Alerts
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![Alert](./src/images/alert.png)
 
-### `npm run eject`
+If the recipe does not exist then an alert shows up on the top. _P.s_. If any error occurs while making the fetch request, the error message will be shown in the form of an alert.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. ##### Sort
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![Sort](./src/images/sort.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+In the recipes page, by clicking the sort arrow, the sort panel opens. Here, the user can choose between _Healthiness score_ and _Popularity_. The recipes will be sorted upon clicking the done button.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+4. ##### Filter
 
-## Learn More
+![Filter](./src/images/filter.png)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The filter panel opens by clicking the filter arrow and here the user can filter the recipes by country and/or by meal types.The recipes will be filtered upon clicking the done button.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+P.s.The user can select both sort and filter to further narrow down the search.
 
-### Code Splitting
+5. ##### Add to Favourites
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+![Favourite](./src/images/favourite.png)
 
-### Analyzing the Bundle Size
+By clicking the heart icon on the top-right side of the image the user can save the recipe to the favourites page, where it can be accessed later. P.s. An alert pops up letting the user know the recipe has been favourited, the heart icon also turns red. Clicking the heart icon again removes the recipe from favourites and an alert shows up to confirm that.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### `Installation`
 
-### Making a Progressive Web App
+Clone the project from GitHub and open the terminal, making sure you are in the folder where the project is saved. Type in : ` npm install`. That will install all the dependencies. Then type in : `npm run start`
+That should open up the react project on
+`localhost:3000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### `After-Thoughts`
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+To save the recipes in the favourites page the `localStorage` api was used. In the upcoming versions, the plan is to make this a fullstack web app by adding a database so that users can have their individual profiles where they can save recipes, mark them as favourites etc. There is also a plan to add a feature where users can share their opinion in regards to a particular recipe.
